@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+
+<!-- 对html 进行修改,会影响整个页面的背景颜色 -->
+<html >
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+ <!-- 标签名: css选择器, #ID名 : id选择器,  .类名: class选择器 -->
+		<style>
+			html { background-color: #ddd;}
+			body { margin: 0px; }
+			a    {  text-decoration: none;  margin: 0 15px; }
+			
+			#banner { width:100%; }
+			#navigation { text-align: center; height: 80px ; line-height: 80px; background-color: aliceblue; }
+			#buttom { text-align: center; height: 40px; line-height: 40px; background-color: darkgrey; font-size: 16px; color: dimgrey; }
+			
+			.nav {   color: black; }
+			
+			#banner img { width: 100%; }
+		</style>
+	</head>
+	<!-- 将网页两侧的一小些空白去掉, 这个是body产生的 -->
+	<body>
+		
+		<!-- banner 横幅, 设置图片放大到原尺寸-->
+		<div id="banner">
+			<img src="./img/back.jpg" >
+		</div>
+			
+		<!-- navigation 导航, 字体默认占用16px, 修改 行高 与高度相等 就可以让文字居中和垂直-->
+		<!-- -->
+		<div id="navigation" >
+			   <!-- style="margin: 0 15px; 设置文本的上下距离为0, 左右距离为15px -->
+			<a href="../index.html" calss="nav"> asasas </a>
+			<a href="../index.html" calss="nav"> basasdasd </a>
+			<a href="../index.html" calss="nav"> csdada </a>
+			<a href="../index.html"> csadasd </a>
+			<a href="../index.html"> dsdada </a>
+		</div>
+			
+		<!-- butten 底部 -->
+		<div id="buttom" >
+			版权所有
+		</div>
+		
+	</body>
+</html>
