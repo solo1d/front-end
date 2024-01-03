@@ -2,6 +2,7 @@
 
 - [骨架](#骨架)
 - [转义字符](#转义字符)
+- [HTML头](#HTML头)
 - [排版标签](#排版标签)
     - [h1标题标签](h1标题标签)
     - [ul有序和ol无序列表标签](#ul有序和ol无序列表标签)
@@ -9,7 +10,11 @@
     - [p段落标签](#p段落标签)
     - [hr水平线标签](#hr水平线标签)
     - [br换行标签](#br换行标签)
+    - [code展示代码](#code展示代码)
+    - [time标记时间和日期](#time标记时间和日期)
 - [a超链接标签](#a超链接标签)
+    - [a下载链接download属性](#a下载链接download属性)
+    - [a电子邮件链接mailto属性](#a电子邮件链接mailto属性)
 - [img图片标签](#img图片标签)
 - [table表格标签](#table表格标签)
     - [col设置一列数据显示格式](#col设置一列数据显示格式)
@@ -20,7 +25,12 @@
 - [input输入框或按钮,提交表单案例,有form标签](#input输入框或按钮,提交表单案例,有form标签)
     - [get请求和post请求,提交数据和获取数据的表单补充内容](#get请求和post请求,提交数据和获取数据的表单补充内容)
 - [span容器和div容器标签](#span容器和div容器标签)
-- 
+- [video视频元素标签](#video视频元素标签)
+- [audio音频元素标签](#audio音频元素标签)
+- [iframe嵌入式标签](#iframe嵌入式标签)
+- [emdeb和object通用嵌入工具标签](#emdeb和object通用嵌入工具标签)
+- [svg矢量图标记](#svg矢量图标记)
+- [HTML布局元素细节](#HTML布局元素细节)
 
 
 
@@ -63,6 +73,51 @@
 ```html
 &nbsp;     <!-- 网页上显示一个空格 是 html的空格转义字符 -->
 ```
+
+
+
+
+
+## HTML头
+
+```html
+<!doctype html>
+<html lang="zh-CN">  <!-- 为文档设定主语言 -->
+  <head>
+    <meta charset="utf-8" /> <!-- 指定文档的字符编码 -->
+		<meta
+			  name="description"
+			  content="The MDN Web Docs Learning Area aims to provide
+						complete beginners to the Web with all they need to know to get
+						started with developing web sites and applications." 
+    />  <!-- name 属性 指定了 meta 元素的类型；说明该元素包含了什么类型的信息。 -->
+				<!-- content 属性 指定了实际的元数据内容， 内容可以在搜索引擎中搜到 -->
+    
+    <meta
+      property="og:image"
+      content="https://developer.mozilla.org/mdn-social-share.png" />
+    <meta
+      property="og:description"
+      content="The Mozilla Developer Network (MDN) provides and HTML Apps." />
+		<meta property="og:title" content="Mozilla Developer Network" />
+    <!-- property="og:image" 属性会在搜索引擎中展示一张图片 -->
+    <!-- content="https://developer.mozilla.org/mdn-social-share.png" 配合的图片路径 -->
+    
+    
+    
+    <title>我的测试页面</title>	<!-- 页面标题 -->
+	  <link rel="icon" href="favicon.ico" type="image/x-icon" />	 <!-- 加载图标文件 -->
+		<link rel="stylesheet" href="my-css-file.css" />	<!-- 加载 css -->
+	  <script src="my-js-file.js" defer></script>  <!-- 加载 javaScript -->
+    </head>
+</html>
+```
+
+
+
+下面是搜索引擎边界面上出现的图片内容
+
+<img src="./assets/facebook-output.png" alt="来自 MDN 主页的 OGP 数据在 facebook 上显示，含有图片、标题和描述。" style="zoom:100%;" />
 
 
 
@@ -182,11 +237,122 @@
 
 
 
+### code展示代码
+
+- `<code>` :用于标记计算机通用代码。
+- `<pre>`：用于保留空白字符（通常用于代码块）——如果文本中使用了缩进或多余的空白，浏览器将忽略它，你将不会在呈现的页面上看到它。但是，如果你将文本包含在 `<pre></pre>` 标签中，那么空白将会以与你在文本编辑器中看到的相同的方式渲染出来。
+- `<var>`：用于标记具体变量名。
+- `<kbd>`：用于标记输入电脑的键盘（或其他类型）输入。
+- `<samp>`：用于标记计算机程序的输出。
+
+```html
+<pre><code>const para = document.querySelector('p');
+
+para.onclick = function() {
+  alert('噢，噢，噢，别点我了。');
+}</code></pre>
+
+<p>
+  请不要使用 <code>&lt;font&gt;</code> 、
+  <code>&lt;center&gt;</code> 等表象元素。
+</p>
+
+<p>在上述的 JavaScript 示例中，<var>para</var> 表示一个段落元素。</p>
+
+<p>按 <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>A</kbd> 选择全部内容。</p>
+
+<pre>$ <kbd>ping mozilla.org</kbd>
+<samp>PING mozilla.org (63.245.215.20): 56 data bytes
+64 bytes from 63.245.215.20: icmp_seq=0 ttl=40 time=158.233 ms</samp></pre>
+
+<!-------------------- 显示效果 ------------------------------------------->
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>My test page</title>
+  </head>
+  <body>
+
+
+<pre><code>const para = document.querySelector('p');
+
+para.onclick = function() {
+  alert('噢，噢，噢，别点我了。');
+}</code></pre>
+
+<p>
+  请不要使用 <code>&lt;font&gt;</code> 、
+  <code>&lt;center&gt;</code> 等表象元素。
+</p>
+
+<p>在上述的 JavaScript 示例中，<var>para</var> 表示一个段落元素。</p>
+
+<p>按 <kbd>Ctrl</kbd>/<kbd>Cmd</kbd> + <kbd>A</kbd> 选择全部内容。</p>
+
+<pre>$ <kbd>ping mozilla.org</kbd>
+<samp>PING mozilla.org (63.245.215.20): 56 data bytes
+64 bytes from 63.245.215.20: icmp_seq=0 ttl=40 time=158.233 ms</samp></pre>
+  </body>
+</html>
+```
+
+
+
+<img src="./assets/code展示代码.png" alt="image-20240103173438141" style="zoom:60%;" />
+
+### time标记时间和日期
+
+```html
+<time datetime="2016-01-20">2016 年 1 月 20 日</time>
+
+<!-------------------- 显示效果 ------------------------------------------->
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>My test page</title>
+  </head>
+  <body>
+
+
+<!-- 标准简单日期 -->
+<p><time datetime="2016-01-20">20 January 2016</</time></p>
+<!-- 只包含年份和月份-->
+<p><time datetime="2016-01">January 2016</</time></p>
+<!-- 只包含月份和日期 -->
+<p><time datetime="01-20">20 January</</time></p>
+<!-- 只包含时间，小时和分钟数 -->
+<p><time datetime="19:30">19:30</</time></p>
+<!-- 还可包含秒和毫秒 -->
+<p><time datetime="19:30:01.856">19:30:01.856</</time></p>
+<!-- 日期和时间 -->
+<p><time datetime="2016-01-20T19:30">7.30pm, 20 January 2016</</time></p>
+<!-- 含有时区偏移值的日期时间 -->
+<p><time datetime="2016-01-20T19:30+01:00">7.30pm, 20 January 2016 is 8.30pm in France</</time></p>
+<!-- 提及特定周 -->
+<p><time datetime="2016-W04">The fourth week of 2016</</time></p>
+
+<p><time datetime="2016-01-20">2016 年 1 月 20 日</time></p>
+
+  </body>
+</html>
+```
+
+<img src="./assets/time标记时间和日期.png" alt="image-20240103184058451" style="zoom:50%;" />
+
+
+
+
+
 ## a超链接标签
 
 ```html
 <!-- 超链接  , 可以嵌套图片, 文本,等很多内容 -->
-<a href="链接地址" target="_blank" style="text-decoration: none;margin: 0 15px color: black;"> 文本或图片 
+<a href="链接地址" target="_blank" style="text-decoration: none;margin: 0 15px color: black;"  title="鼠标指向时显示的内容" > 文本或图链接说明
 </a>   
    <!-- target表示目标地址,可以是目录 也可以是某个网址 -->
    <!-- _blank参数表示空白, 代表在空白新窗口打开链接地址页面,没有该参数就在当前页面跳转 -->
@@ -195,6 +361,7 @@
    <!-- style="text-decoration: none;"    取消超链接底部的下下划线 -->
    <!-- border-right: solid 1px #808080; 边框样式为直线,但只保留右边框,边框粗细, 边框颜色 -->
    <!-- padding: 0px 15px;  内边距 上下增加0高度, 左和右都增加 15px宽度 -->
+   <!-- title="鼠标指向时显示的内容" ; 会在鼠标指向时显示这部分内容 -->
 
 
 <!-------------------- 显示效果 ------------------------------------------->
@@ -207,6 +374,92 @@
 ```
 
 <img src="image/超链接.png" alt="超链接" style="zoom:50%;" />
+
+
+
+### a下载链接download属性
+
+```html
+<!-- 当你链接到要下载的资源而不是在浏览器中打开时，你可以使用 download 属性来提供一个默认的保存文件名。下面是一个 Firefox 的 Windows 最新版本下载链接的示例： -->
+
+<a
+  href="https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=zh-CN"
+  download="firefox-latest-64bit-installer.exe"
+  title="下载最新的 Firefox 中文版" >
+  下载最新的 Firefox 中文版 - Windows（64 位）
+</a>
+
+<!--	download  标签提示要下载的内容 -->
+
+<!---------------------------------------------------->
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>My test page</title>
+  </head>
+  <body>
+<a
+  href="https://download.mozilla.org/?product=firefox-latest-ssl&os=win64&lang=zh-CN"
+  download="firefox-latest-64bit-installer.exe"
+  title="下载最新的 Firefox 中文版" >
+  下载最新的 Firefox 中文版 - Windows（64 位）
+</a>
+  </body>
+</html>
+```
+
+<img src="./assets/a下载链接download属性.png" alt="image-20240103171228142" style="zoom:50%;" />
+
+
+
+
+
+
+
+### a电子邮件链接mailto属性
+
+```html
+<!-- 指明收件人电子邮件地址的 mailto: 链接 -->
+<!-- 下面的链接点击后，会默认拉起本地的邮箱应用，并自动填写收件人 -->
+<a href="mailto:nowhere@mozilla.org">向 nowhere 发邮件</a>
+	
+	<!--  href 属性  指向链接 -->
+
+也可以在邮件后面新增抄送人，密送和邮件内容。
+<a
+  href="mailto:nowhere@mozilla.org?cc=name2@rapidtables.com&bcc=name3@rapidtables.com&subject=The%20subject%20of%20the%20email&body=The%20body%20of%20the%20email">
+  发送含有 cc、bcc、主题和主体的邮件
+</a>
+
+	<!-- href:   mailto:nowhere@mozilla.org  是收件人 -->
+	<!-- href:   ?cc=name2@rapidtables.com   cc代表的是抄送, =号后面是邮件地址, 前面的? 问号是分隔符 -->
+	<!-- href:   &bcc=name3@rapidtables.com   bcc代表是密 -->
+	<!-- href:   &subject=The%20subject%20of%20the%20email&body=The%20body%20of%20the%20email  是邮件内容, %20 表示空格转义字符 -->
+
+
+<!---------------------------------------------------->
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>My test page</title>
+  </head>
+  <body>
+
+<a
+  href="mailto:nowhere@mozilla.org?cc=name2@rapidtables.com&bcc=name3@rapidtables.com&subject=The%20subject%20of%20the%20email&body=The%20body%20of%20the%20email">
+  发送含有 cc、bcc、主题和主体的邮件
+</a>
+
+  </body>
+</html>
+
+```
+
+<img src="./assets/a电子邮件链接mailto属性.png" alt="a电子邮件链接mailto属性" style="zoom:50%;" />
 
 
 
@@ -459,7 +712,7 @@
 
 - **span,  一个容器标签,不具备任何特殊功能, 仅当作容器来使用**
     - **用于包裹一段文本, 便于给文本增加样式**
-        - **容器相当于是个隐形方框, 它包裹了写入的文本, 并且在这个防框内修改文本**
+        - **容器相当于是个隐形方框, 它包裹了写入的文本, 并且在这个方框内修改文本**
 - **容器默认是看不见的**
 
 
@@ -531,21 +784,150 @@
 
 
 
+## video视频元素标签
+
+```html
+<!-- <vide> 允许你轻松地嵌入一段视频 -->
+
+<video
+  controls
+  width="400"
+  height="400"
+  autoplay
+  loop
+  muted
+  preload="auto"
+  poster="poster.png">
+  <source src="rabbit320.mp4" type="video/mp4" />
+  <source src="rabbit320.webm" type="video/webm" />
+  <p>
+    你的浏览器不支持 HTML5 视频。可点击<a href="rabbit320.mp4">此链接</a>观看
+  </p>
+</video>
+
+	<!-- src   是视频的源路径 -->
+  <!-- controls 属性 用户必须能够控制视频和音频的回放功能。你可以使用 controls 来包含浏览器提供的控件界面，同时你也可以使用合适的 JavaScript API 创建自己的界面。界面中至少要包含开始、停止以及调整音量的功能。 -->
+  <!-- <video> 标签内的内容
+这个叫做后备内容 — 当浏览器不支持 <video> 标签的时候，就会显示这段内容，这使得我们能够对旧的浏览器提供回退内容。你可以添加任何后备内容，在这个例子中我们提供了一个指向这个视频文件的链接，从而使用户至少可以访问到这个文件，而不会局限于浏览器的支持。 -->
+    autoplay    自动播放属性
+    loop        音频或者视频文件循环播放
+    muted       默认关闭声音
+    poster      图像的 URL，这个图像会在视频播放前显示
+    preload     来缓冲较大的文件，有 3 个值可选：
+                    "none" ：不缓冲
+                    "auto" ：页面加载后缓存媒体文件
+                    "metadata" ：仅缓冲文件的元数据
+
+```
+
+
+## audio音频元素标签
+```html
+<!-- 音频标签基本上和video 相同 -->
+<audio controls>
+  <source src="viper.mp3" type="audio/mp3" />
+  <source src="viper.ogg" type="audio/ogg" />
+  <p>你的浏览器不支持 HTML5 音频，可点击<a href="viper.mp3">此链接</a>收听。</p>
+</audio>
+
+```
+
+
+## iframe嵌入式标签
+```html
+<iframe 
+    src="//player.bilibili.com/player.html?aid=408948627&bvid=BV1jG411i7vb&cid=1345897342&p=1"
+    width="100%"
+    height="500"
+    frameborder="no"
+    scrolling="no" 
+    border="0"  
+    framespacing="0" 
+    allowfullscreen="true"
+    sandbox> 
+</iframe>
+    src             指向要嵌入文档的 URL 路径。
+    frameborder     如果设置为 1，则会告诉浏览器在此框架和其他框架之间绘制边框，这是默认行为。0 删除边框。
+    scrolling       
+    border
+    framespacing
+    allowfullscreen 可以通过全屏API 设置为全屏模式
+    sandbox         该属性可以提高安全性设置
+
+
+
+```
+
+## emdeb和object通用嵌入工具标签
+**插件是一种对浏览器原生无法读取的内容提供访问权限的软件。**
+```html
+这些元素是用来嵌入多种类型的外部内容的通用嵌入工具，其中包括像 Java 小程序和 Flash，PDF（可在浏览器中显示为一个 PDF 插件）这样的插件技术，甚至像视频，SVG 和图像的内容！
+
+<embed
+  src="whoosh.swf"
+  quality="medium"
+  bgcolor="#ffffff"
+  width="550"
+  height="400"
+  name="whoosh"
+  align="middle"
+  allowScriptAccess="sameDomain"
+  allowFullScreen="false"
+  type="application/x-shockwave-flash"
+  pluginspage="http://www.macromedia.com/go/getflashplayer" />
+
+  <!-- embed元素嵌入 Flash 影片的范例 -->
+
+
+  <object
+  data="mypdf.pdf"
+  type="application/pdf"
+  width="800"
+  height="1200"
+  typemustmatch>
+  <p>
+    You don't have a PDF plugin, but you can
+    <a href="myfile.pdf">download the PDF file.</a>
+  </p>
+</object>
+
+ <!-- object 将 PDF 嵌入一个页面的例子 -->
+```
+
+## svg矢量图标记
+```html
+以下代码创建一个圆和一个矩形：
+
+<svg
+  version="1.1"
+  baseProfile="full"
+  width="300"
+  height="200"
+  xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="black" />
+  <circle cx="150" cy="100" r="90" fill="blue" />
+</svg>
+    
+    绘画出来一个 黑色方块底，蓝色的圆圈。
+
+<!-- 使用 <iframe> 嵌入 SVG -->
+<iframe src="triangle.svg" width="500" height="500" sandbox>
+  <img src="triangle.png" alt="Triangle with three unequal sides" />
+</iframe>
+
+
+```
+<img src="./assets/svg矢量图标记.png" alt="svg矢量图标记" style="zoom:80%;" />
 
 
 
 
+## HTML布局元素细节
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+- `<main>`  存放每个页面独有的内容。每个页面上只能用一次 `<main>`，且直接位于 `<body>` 中。最好不要把它嵌套进其他元素。
+- `<article>` 包围的内容即一篇文章，与页面其他部分无关（比如一篇博文）。
+- `<section>` 与 `<article>` 类似，但 `<section>` 更适用于组织页面使其按功能（比如迷你地图、一组文章标题和摘要）分块。一般的最佳用法是：以  **标题** 作为开头；也可以把一篇 `<article>` 分成若干部分并分别置于不同的 `<section>` 中，也可以把一个区段 `<section>` 分成若干部分并分别置于不同的 `<article>` 中，取决于上下文。
+- `<aside>` 包含一些间接信息（术语条目、作者简介、相关链接，等等）。
+- `<header>` 是简介形式的内容。如果它是 `<body>` 的子元素，那么就是网站的全局页眉。如果它是`<article>` 或 `<section>`的子元素，那么它是这些部分特有的页眉（此 `<header>` 非彼 **标题**）。
+- `<nav>`包含页面主导航功能。其中不应包含二级链接等内容。
+- `<footer>` 包含了页面的页脚部分。
