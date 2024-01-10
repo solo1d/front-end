@@ -16,12 +16,15 @@
     - [a下载链接download属性](#a下载链接download属性)
     - [a电子邮件链接mailto属性](#a电子邮件链接mailto属性)
 - [img图片标签](#img图片标签)
+  - [img响应式图片设计](#img响应式图片设计)
+  - [picture图片版本选择](#picture图片版本选择)
 - [table表格标签](#table表格标签)
     - [col设置一列数据显示格式](#col设置一列数据显示格式)
     - [colgroup设置一组数据显示格式](#colgroup设置一组数据显示格式)
     - [tr表格中的行](#tr表格中的行)
     - [td行中的列](#td行中的列)
-    - [th行中的列,简化](#th行中的列,简化)
+    - [th行中的列标题](#th行中的列标题)
+    - [thead和tfoot以及tbody标签结构](#thead和tfoot以及tbody标签结构)
 - [input输入框或按钮,提交表单案例,有form标签](#input输入框或按钮,提交表单案例,有form标签)
     - [get请求和post请求,提交数据和获取数据的表单补充内容](#get请求和post请求,提交数据和获取数据的表单补充内容)
 - [span容器和div容器标签](#span容器和div容器标签)
@@ -352,7 +355,7 @@ para.onclick = function() {
 
 ```html
 <!-- 超链接  , 可以嵌套图片, 文本,等很多内容 -->
-<a href="链接地址" target="_blank" style="text-decoration: none;margin: 0 15px color: black;"  title="鼠标指向时显示的内容" > 文本或图链接说明
+<a href="链接地址" target="_blank" style="text-decoration: none;margin: 0 15px; color: black;"  title="鼠标指向时显示的内容" > 文本或图链接说明
 </a>   
    <!-- target表示目标地址,可以是目录 也可以是某个网址 -->
    <!-- _blank参数表示空白, 代表在空白新窗口打开链接地址页面,没有该参数就在当前页面跳转 -->
@@ -411,10 +414,6 @@ para.onclick = function() {
 ```
 
 <img src="./assets/a下载链接download属性.png" alt="image-20240103171228142" style="zoom:50%;" />
-
-
-
-
 
 
 
@@ -481,6 +480,79 @@ para.onclick = function() {
 ```
 
 <img src="image/图片.png" style="zoom:50%;" />
+
+### img响应式图片设计
+```html
+<img
+  srcset="elva-fairy-480w.jpg 480w, elva-fairy-800w.jpg 800w"
+  sizes="(max-width: 600px) 480px,
+         800px"
+  src="elva-fairy-800w.jpg"
+  alt="Elva dressed as a fairy" />
+
+
+srcset 和 sizes 属性  来提供更多额外的资源图像和提示，帮助浏览器选择合适的一个资源
+srcset 定义了浏览器可选择的图片设置以及每个图片的大小，每张图片信息的设置和前一个用逗号隔开，每个设置要写下面三种内容：
+    1、一个文件名（elva-fairy-480w.jpg）
+    2、一个空格
+    3、图片的固有宽度（以像素为单位）（480w）。注意，这里使用宽度描述符 w，而非你可能期望的 px。图片的固有宽度 (en-US)是它的真实大小
+sizes 定义了一组媒体条件（例如屏幕宽度）并且指明当某些媒体条件为真时，什么样的图片尺寸是最佳选择——这就是我们之前提到的提示。上面的示例中，在每个逗号之前，我们写：
+    1、一个媒体条件（(max-width:600px)）媒体条件描述了一种屏幕可能处于的状态。
+    2、一个空格
+    3、当媒体条件为真时，图像将填充的槽的宽度（480px）
+
+有了这些属性后，浏览器会：
+  1、检查设备宽度
+  2、检查 sizes 列表中哪个媒体条件是第一个为真
+  3、查看给予该媒体查询的槽大小
+  4、加载 srcset 列表中引用的最接近所选的槽大小的图像
+
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width"/>
+    <title>My test page</title>
+
+  <!-- 这里是 img的 css 属性，替换了 img 的 sizes 属性 -->
+    <style>
+      img {
+        width: 320px;
+      }
+    </style>
+
+  </head>
+  <body>
+
+    <img
+    srcset="logo_flat_400w.png, logo_flat_800w.png 2x "
+    src="logo_flat.png"
+    alt="Elva dressed as a fairy" />
+    <!-- 根据分辨率自动切换 -->
+  </body>
+</html>
+```
+
+### picture图片版本选择
+```html
+<picture>
+  <source media="(max-width: 799px)" srcset="elva-480w-close-portrait.jpg" />
+  <source media="(min-width: 800px)" srcset="elva-800w.jpg" />
+  <img src="elva-800w.jpg" alt="Chris standing up holding his daughter Elva" />
+</picture>
+
+在任何情况下，你都必须在 </picture> 之前正确提供一个 <img> 元素以及它的 src 和 alt 属性，否则不会有图片显示。
+
+  source 元素包含两个属性：
+    media 属性,这一属性包含一个媒体条件 来决定哪张图片会显示。
+    srcset 属性包含要显示图片的路径。
+  
+  最后的 img 标签则是为了保留旧浏览器兼容性。
+
+<!-- 拖动显示窗口时， 根据窗口的大小 会实时的变更图片 -->
+```
+
 
 ## table表格标签
 
@@ -601,11 +673,130 @@ para.onclick = function() {
 
 <img src="image/td表格列标签.png" style="zoom:50%;" />
 
-### th行中的列,简化
+### th行中的列标题
 
 ```html
 <th> c </th>  <!-- th等同于 加粗并水平居中的 td -->
 ```
+
+### thead和tfoot以及tbody标签结构
+```html
+使用 <thead>、<tfoot> 和 <tbody>，这些元素允许把表格中的部分标记为表头、表尾、表体三部分。
+-    <thead> 元素必须包住表格中作为表头的部分。一般是第一行，往往都是每列的标题，但是不是每种情况都是这样的。如果你使用了 <col>/<colgroup> 元素，那么 <thead> 元素就需要放在它们的下面。
+-    <tfoot> 元素需要包住表格中作为表脚的部分。一般是最后一行，往往是对前面所有行的总结，比如，你可以按照预想的方式将<tfoot>放在表格的底部，或者就放在 <thead> 的下面。(浏览器仍将它呈现在表格的底部)
+-    <tbody> 元素需要包住表格内容中不在表头或表尾的其他部分。它可以出现在表头的下方，或者有时出现在表脚下方，这取决于你如何安排它。
+
+<!------------------- 显示范例 ---------------------------------------------->
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>My spending record</title>
+    <style>
+      html {
+        font-family: sans-serif;
+      }
+
+      table {
+        border-collapse: collapse;
+        border: 4px solid rgb(200, 200, 200);
+        letter-spacing: 1px;
+        font-size: 0.8rem;
+      }
+
+      td,
+      th {
+        border: 2px solid rgb(190, 190, 190);
+        padding: 10px 20px;
+      }
+
+      th {
+        background-color: rgb(235, 235, 235);
+      }
+
+      td {
+        text-align: center;
+      }
+
+      tr:nth-child(even) td {
+        background-color: rgb(250, 250, 250);
+      }
+
+      tr:nth-child(odd) td {
+        background-color: rgb(245, 245, 245);
+      }
+
+      caption {
+        padding: 10px;
+      }
+
+      tbody {
+        font-size: 90%;
+        font-style: italic;
+      }
+
+      tfoot {
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <table>
+      <caption>
+        How I chose to spend my money
+      </caption>
+      <thead>
+        <tr>
+          <th>Purchase</th>
+          <th>Location</th>
+          <th>Date</th>
+          <th>Evaluation</th>
+          <th>Cost (€)</th>
+        </tr>
+      </thead>
+      <tfoot>
+        <tr>
+          <td colspan="4">SUM</td>
+          <td>118</td>
+        </tr>
+      </tfoot>
+      <tbody>
+        <tr>
+          <td>Haircut</td>
+          <td>Hairdresser</td>
+          <td>12/09</td>
+          <td>Great idea</td>
+          <td>30</td>
+        </tr>
+        <tr>
+          <td>Lasagna</td>
+          <td>Restaurant</td>
+          <td>12/09</td>
+          <td>Regrets</td>
+          <td>18</td>
+        </tr>
+        <tr>
+          <td>Shoes</td>
+          <td>Shoeshop</td>
+          <td>13/09</td>
+          <td>Big regrets</td>
+          <td>65</td>
+        </tr>
+        <tr>
+          <td>Toothpaste</td>
+          <td>Supermarket</td>
+          <td>13/09</td>
+          <td>Good</td>
+          <td>5</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
+```
+<img src="./assets/thead和tfoot以及tbody标签结构.png" alt="thead和tfoot以及tbody标签结构.png" style="zoom:70%;" />
+
+
 
 
 
