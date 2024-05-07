@@ -47,7 +47,9 @@
   - [async和await](#async和await)
   - [如何实现基于Promise的API](#如何实现基于Promise的API)
     - [实现alarm()API](#实现alarm()API)
-
+  - [Promise构造器](#Promise构造器)
+ - [workers](#workers)
+ - [序列动画](#序列动画)
 
 # javaScript高层定义
 ```html
@@ -1575,12 +1577,235 @@ button.addEventListener("click", setAlarm);
 ```
 ![实现alarm_API](./assets/实现alarm_API.png)
 
-## Promise()构造器
+## Promise构造器
+```html
+ <body>
+    <div>
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" size="4" value="Matilda" />
+    </div>
+    <div>
+      <label for="delay">Delay:</label>
+      <input type="text" id="delay" name="delay" size="4" value="1000" />
+    </div>
+    <button id="set-alarm">Set alarm</button>
+    <div id="output"></div>
+    
+    <script src="./script.js">
+    </script>
+  </body>
+```
+```js
+const name = document.querySelector("#name");
+const delay = document.querySelector("#delay");
+const button = document.querySelector("#set-alarm");
+const output = document.querySelector("#output");
+
+function alarm(person, delay) {
+  return new Promise((resolve, reject) => {
+    if (delay < 0) {
+      throw new Error("Alarm delay must not be negative");
+    }
+    window.setTimeout(() => {
+      resolve(`Wake up, ${person}!`);
+    }, delay);
+  });
+}
+
+button.addEventListener("click", async () => {
+  try {
+    const message = await alarm(name.value, delay.value);
+    output.textContent = message;
+  } catch (error) {
+    output.textContent = `Couldn't set alarm: ${error}`;
+  }
+});
+```
+![使用alarm函数API](./assets/使用alarm函数API.png)
+
+
+# workers
+主代码和你的 worker 代码永远不能直接访问彼此的变量。Workers 和主代码运行在完全分离的环境中，只有通过相互发送消息来进行交互。特别是，这意味着 workers 不能访问 DOM（窗口、文档、页面元素等等）。
+有三种不同类型的 workers：
+- dedicated workers  由一个脚本实例使用
+- shared workers
+- service workers
+
+在本文中，我们介绍了 web workers，它使得 web 应用能够离线加载任务到单独的线程中。主线程和 worker 不直接共享任何变量，但是可以通过发送消息来进行通信，这些消息作为 message 事件被对方接受。
+Workers 尽管不能访问主应用程序能访问的所有 API，尤其是不能访问 DOM，但是可以作为使主应用程序保持响应的一个有效的方式。
+
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Number of primes</title>
+    <script type="text/javascript" src="./main.js" defer></script>
+    <link href="./styles.css" rel="stylesheet">
+  </head>
+  <body>
+    <label for="quota">Number of primes:</label>
+    <input type="text" id="quota" name="quota" value="1000000">
+
+    <button id="generate">Generate primes</button>
+    <button id="reload">Reload</button>
+
+    <textarea id="user-input" rows="5" cols="62">Try typing in here immediately after pressing "Generate primes"</textarea>
+    <div id="output"></div>
+  </body>
+</html>
+```
+```css
+textarea {
+  display: block;
+  margin: 1rem 0;
+}
+```
+```js
+// main.js  文件
+// 主代码
+// 在 "generate.js" 中创建一个新的 worker
+const worker = new Worker("generate.js");
+// 只要主脚本创建 worker, 里面的代码就会运行。 也就是过了这里，实际 generate.js 就已经在运行了
+
+// 当用户点击 "Generate primes" 时，给 worker 发送一条消息。
+// 消息中的 command 属性是 "generate", 还包含另外一个属性 "quota"，即要生成的质数。
+document.querySelector("#generate").addEventListener("click", () => {
+  const quota = document.querySelector("#quota").value;
+  worker.postMessage({
+    command: "generate",
+    quota: quota,
+  });
+});
+
+// 当 worker 给主线程回发一条消息时，为用户更新 output 框，包含生成的质数（从 message 中获取）。
+worker.addEventListener("message", (message) => {
+  document.querySelector("#output").textContent =
+    `Finished generating ${message.data} primes!`;
+});
+
+document.querySelector("#reload").addEventListener("click", () => {
+  document.querySelector("#user-input").value =
+    'Try typing in here immediately after pressing "Generate primes"';
+  document.location.reload();
+});
+```
+```js
+// generate.js   文件
+// 监听主线程中的消息。
+// worker 要做的第一件事情就是开始监听来自主脚本的消息。这通过使用 addEventListener() 实现，
+//   它在 worker 中是一个全局函数。在 message 事件处理器内部，事件的 data 属性包含一个来自主脚本的参数的副本。如果主脚本传递 generate 命令，我们就调用 generatePrimes()，传入来自消息事件的 quota 值。
+// 如果消息中的 command 是 "generate"，则调用 `generatePrimse()`
+addEventListener("message", (message) => {
+  if (message.data.command === "generate") {
+    generatePrimes(message.data.quota);
+  }
+});
+
+// 生成质数 (非常低效)
+function generatePrimes(quota) {
+  function isPrime(n) {
+    for (let c = 2; c <= Math.sqrt(n); ++c) {
+      if (n % c === 0) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  const primes = [];
+  const maximum = 1000000;
+
+  while (primes.length < quota) {
+    const candidate = Math.floor(Math.random() * (maximum + 1));
+    if (isPrime(candidate)) {
+      primes.push(candidate);
+    }
+  }
+
+  // 完成后给主线程发送一条包含我们生成的质数数量的消息消息。
+  postMessage(primes.length);
+}
+```
+ 需要将项目放到 apache2 或其他服务器进行访问， 不可以直接进行文件访问，会默认阻止 workers 的。
+![workers](./assets/workers.png)
 
 
 
+# 序列动画
+```html
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Sequencing animations</title>
+    <script type="text/javascript" src="main.js" defer></script>
+    <link href="style.css"rel="stylesheet">
+  </head>
 
+  <body>
 
+    <div id="alice-container">
+      <img id="alice1"  src="alice.svg" role="img" alt="silhouette of crouching long haired character in dress and short boots">
+      <img id="alice2"  src="alice.svg" role="img" alt="silhouette of crouching long haired character in dress and short boots">
+      <img id="alice3"  src="alice.svg" role="img" alt="silhouette of crouching long haired character in dress and short boots">
+    </div>
 
+  </body>
 
+</html>
+```
+```css
+body {
+  background: #6c373f;
+  display: flex;
+  justify-content: center;
+  }
+
+#alice-container {
+  width: 90vh;
+  display: grid;
+  place-items: center;
+  grid-template-areas:
+    "a1 . ."
+    ". a2 ."
+    ". . a3";
+}
+
+#alice1 {
+  grid-area: a1;
+}
+
+#alice2 {
+  grid-area: a2;
+}
+
+#alice3 {
+  grid-area: a3;
+}
+```
+```js
+const aliceTumbling = [
+  { transform: "rotate(0) scale(1)" },
+  { transform: "rotate(360deg) scale(0)" },
+];
+
+const aliceTiming = {
+  duration: 2000,
+  iterations: 1,
+  fill: "forwards",
+};
+
+const alice1 = document.querySelector("#alice1");
+const alice2 = document.querySelector("#alice2");
+const alice3 = document.querySelector("#alice3");
+
+alice1.animate(aliceTumbling, aliceTiming);
+alice2.animate(aliceTumbling, aliceTiming);
+alice3.animate(aliceTumbling, aliceTiming);
+```
+显示的图案会进行旋转并消失.
+![序列动画](./assets/序列动画.png)
 
